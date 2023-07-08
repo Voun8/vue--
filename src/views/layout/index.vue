@@ -28,7 +28,7 @@
             ><i class="el-icon-key"></i>重置密码</el-menu-item
           >
         </el-submenu>
-        <el-menu-item index="2"
+        <el-menu-item index="2" @click="quitFn"
           ><i class="el-icon-switch-button"></i>退出</el-menu-item
         >
       </el-menu>
@@ -45,10 +45,26 @@
     </el-container>
   </el-container>
 </template>
-
+// 在组件变迁上绑定的所有事件（包括原生名字） //
+都是自定义事件，都需呀组件$emit来触发才行 // 万一组件内不支持这个原生事件名字 //
+解决：@事件名.native=”方法名“ // .native给组件内根标签，绑定这个原生的事件
 <script>
 export default {
-  name: 'my-layout'
+  name: 'my-layout',
+  methods: {
+    quitFn () {
+      this.$confirm('确认退出吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$store.commit('updateToken', '')
+          this.$router.push('/login')
+        })
+        .catch(() => {})
+    }
+  }
 }
 </script>
 
