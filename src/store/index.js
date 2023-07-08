@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import { getUserInfoAPI } from '@/api'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: ''
+    token: '',
+    userInfo: {}
   },
   getters: {
   },
@@ -14,9 +16,17 @@ export default new Vuex.Store({
     updateToken (state, value) {
       state.token = value
       console.log(state.token)
+    },
+    updateUserInfo (state, value) {
+      state.userInfo = value
     }
   },
   actions: {
+    async getUserInfoActions (store) {
+      const res = await getUserInfoAPI()
+      console.log(res)
+      store.commit('updateUserInfo', res.data.data)
+    }
   },
   modules: {
   },

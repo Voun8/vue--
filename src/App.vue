@@ -3,6 +3,10 @@
   <router-view></router-view>
 </template>
 <script>
-export default {}
+export default {
+  created () {
+    this.$store.dispatch('getUserInfoActions')
+  }
+}
 </script>
 <style lang="less" scoped></style>
