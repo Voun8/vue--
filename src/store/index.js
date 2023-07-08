@@ -15,7 +15,6 @@ export default new Vuex.Store({
   mutations: {
     updateToken (state, value) {
       state.token = value
-      console.log(state.token)
     },
     updateUserInfo (state, value) {
       state.userInfo = value
@@ -24,7 +23,6 @@ export default new Vuex.Store({
   actions: {
     async getUserInfoActions (store) {
       const res = await getUserInfoAPI()
-      console.log(res)
       store.commit('updateUserInfo', res.data.data)
     }
   },
