@@ -69,7 +69,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['updateToken']),
+    ...mapMutations(['updateToken', 'updateUserInfo']),
     loginFn () {
       this.$refs.loginRef.validate(async (valid) => {
         if (valid) {
