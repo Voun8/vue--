@@ -38,8 +38,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import { loginAPI } from '@/api'
-// import { loginAPI } from '@/api'
 export default {
   name: 'my-login',
   data () {
@@ -69,13 +69,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updateToken']),
     loginFn () {
       this.$refs.loginRef.validate(async (valid) => {
         if (valid) {
           const { data: res } = await loginAPI(this.loginForm)
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
-          this.$router.push('/reg')
+          this.updateToken(res.token)
+          // this.$router.push('/')
         } else {
           return false
         }
