@@ -41,6 +41,50 @@
           <img src="../../assets/images/logo.png" alt="" v-else />
           <span>欢迎 {{ nickname || username }}</span>
         </div>
+        <!-- 侧边栏导航信息 -->
+        <el-menu
+          default-active="/home"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          background-color="#23262E"
+          text-color="#fff"
+          active-text-color="#409EFF"
+          unique-opened
+        >
+          <el-menu-item index="/home">
+            <i class="el-icon-s-home"></i>
+            <span>首页</span>
+          </el-menu-item>
+          <el-submenu index="/topic">
+            <template slot="title">
+              <i class="el-icon-s-order"></i>
+              <span>文章管理</span>
+            </template>
+            <el-menu-item index="/topic1">
+              <i class="el-icon-s-data"></i>
+              <span>文章1</span>
+            </el-menu-item>
+            <el-menu-item index="/topic2">
+              <i class="el-icon-document-copy"></i>
+              <span>文章2</span>
+            </el-menu-item>
+          </el-submenu>
+          <el-submenu index="/my">
+            <template slot="title">
+              <i class="el-icon-s-data"></i>
+              <span>个人中心</span>
+            </template>
+            <el-menu-item index="/topic1">
+              <i class="el-icon-s-home"></i>
+              <span>文章1</span>
+            </el-menu-item>
+            <el-menu-item index="/topic2">
+              <i class="el-icon-s-home"></i>
+              <span>文章2</span>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
       </el-aside>
       <el-container>
         <!-- 页面主体区域 -->
@@ -74,6 +118,12 @@ export default {
           this.$router.push('/login')
         })
         .catch(() => {})
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
     }
   }
 }
