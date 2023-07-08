@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { registerAPI } from '@/api'
 export default {
   name: 'my-register',
   data () {
@@ -84,7 +85,24 @@ export default {
   },
   methods: {
     // 注册的点击事件
-    registerFn () {}
+    registerFn () {
+      this.$refs.form.validate(async (vaild) => {
+        if (vaild) {
+          // 通过了校验
+          // 1.调用注册接口
+          const { data: res } = await registerAPI(this.form)
+          // console.log(res)
+          // 2.注册失败提示
+          // elementui在vue原型链上添加了弹窗提示，$message属性
+          if (res.code !== 0) return this.$message.error(res.message)
+          // 3.注册成功，提示
+          this.$message.success(res.message)
+          this.$router.push('/login')
+        } else {
+          return false
+        }
+      })
+    }
   }
 }
 </script>
