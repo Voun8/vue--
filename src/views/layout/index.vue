@@ -60,6 +60,7 @@ export default {
       })
         .then(() => {
           this.$store.commit('updateToken', '')
+          this.$store.commit('updateUserInfo', {})
           this.$router.push('/login')
         })
         .catch(() => {})

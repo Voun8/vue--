@@ -25,7 +25,7 @@ const router = new VueRouter({
 })
 router.beforeEach((to, from, next) => {
   const token = store.state.token
-  if (token) {
+  if (token && !store.state.userInfo.username) {
     store.dispatch('getUserInfoActions')
   }
   next()
