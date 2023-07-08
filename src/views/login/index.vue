@@ -77,7 +77,7 @@ export default {
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
           this.updateToken(res.token)
-          // this.$router.push('/')
+          this.$router.push('/')
         } else {
           return false
         }
