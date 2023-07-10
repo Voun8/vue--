@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import store from '@/store'
 
 export const registerAPI = ({ username, password, repassword }) => {
   // 这里先用这个接口测试下, 如果url以http开头会忽略baseURL, axios直接请求此地址
@@ -13,6 +12,8 @@ export const registerAPI = ({ username, password, repassword }) => {
     }
   })
 }
+
+// 发送登录请求
 export const loginAPI = ({ username, password }) => {
   return request({
     url: '/api/login',
@@ -24,22 +25,18 @@ export const loginAPI = ({ username, password }) => {
   })
 }
 
+// 获取用户详细信息
 export const getUserInfoAPI = () => {
   return request({
     url: '/my/userinfo',
-    methods: 'GET',
-    headers: {
-      Authorization: store.state.token
-    }
+    methods: 'GET'
   })
 }
 
+// 获取侧边栏列表信息
 export const getMenusListApi = () => {
   return request({
     url: '/my/menus',
-    method: 'GET',
-    headers: {
-      Authorization: store.state.token
-    }
+    method: 'GET'
   })
 }
