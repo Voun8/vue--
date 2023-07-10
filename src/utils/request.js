@@ -1,5 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
+import router from '@/router'
+import { Message } from 'element-ui'
 
 // 创建一个自定的axios方法(比原axios多了个基地址)
 // axios函数请求的url地址前面会被拼接基地址, 然后axios请求baseURL+url后台完整地址
@@ -23,6 +25,25 @@ myAxios.interceptors.request.use(function (config) {
   // 口诀：return非promise对象值，会作为成功的结果，返回给下一个Promise对象（axios留在原地）
   // 口诀：return Promise对象，这个Promise对象状态，返回给下一个Promise对象
   // Promise.reject（） 原地留下一个新的Promise对象（状态失败）
+  return Promise.reject(error)
+})
+
+// 响应拦截器
+myAxios.interceptors.response.use(function (response) {
+  // 响应状态码位2xx3xx时成功的回调，形参中的response是成功的结果
+  // return 到axios 原地Promise对象，作为成功结果
+  return response
+}, function (error) {
+  // 响应状态码为4xx，5xx时失败的回调，error是失败的结果
+  // return 到 axios 原地Promise对象，作为失败拒绝的状态，（如果那边用trycatch，就可以捕获到错误）
+  if (error.response.status === 401) {
+    // 本次响应token过期了
+    // 清除vuex一切，然后切换到登陆页面（被动退出登录状态）
+    store.commit('updateToken', '')
+    store.commit('updateUserInfo', {})
+    router.push('/login')
+    Message.error('用户身份已过期')
+  }
   return Promise.reject(error)
 })
 // 导出自定义的axios方法, 供外面调用传参发请求
