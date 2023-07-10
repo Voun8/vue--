@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { updateUserInfoAPI } from '@/api'
 export default {
   name: 'UserInfo',
   data () {
@@ -56,6 +57,22 @@ export default {
           { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    // 提交修改->点击事件
+    submitFn () {
+      this.$refs.userFormRef.validate(async (valid) => {
+        if (valid) {
+          console.log(this.userForm)
+          this.userForm.id = this.$store.state.userInfo.id
+          const res = await updateUserInfoAPI(this.userForm)
+          console.log(res)
+        } else {
+          // 未通过校验
+          return false
+        }
+      })
     }
   }
 }
