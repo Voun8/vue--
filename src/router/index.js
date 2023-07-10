@@ -6,8 +6,15 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    component: () => import('@/views/layout')
+    path: '/', // 网页打开第一次默认路由路径是/
+    redirect: '/home',
+    component: () => import('@/views/layout'),
+    children: [
+      {
+        path: 'home',
+        component: () => import('@/views/home')
+      }
+    ]
   },
   {
     path: '/reg',
