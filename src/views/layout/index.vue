@@ -52,38 +52,34 @@
           active-text-color="#409EFF"
           unique-opened
         >
-          <el-menu-item index="/home">
-            <i class="el-icon-s-home"></i>
-            <span>首页</span>
-          </el-menu-item>
-          <el-submenu index="/topic">
-            <template slot="title">
-              <i class="el-icon-s-order"></i>
-              <span>文章管理</span>
-            </template>
-            <el-menu-item index="/topic1">
-              <i class="el-icon-s-data"></i>
-              <span>文章1</span>
+          <template v-for="item in menus">
+            <el-menu-item
+              v-if="!item.children"
+              :index="item.indexPath"
+              :key="item.indexPath"
+            >
+              <i :class="item.icon"></i>
+              <span>{{ item.title }}</span>
             </el-menu-item>
-            <el-menu-item index="/topic2">
-              <i class="el-icon-document-copy"></i>
-              <span>文章2</span>
-            </el-menu-item>
-          </el-submenu>
-          <el-submenu index="/my">
-            <template slot="title">
-              <i class="el-icon-s-data"></i>
-              <span>个人中心</span>
-            </template>
-            <el-menu-item index="/topic1">
-              <i class="el-icon-s-home"></i>
-              <span>文章1</span>
-            </el-menu-item>
-            <el-menu-item index="/topic2">
-              <i class="el-icon-s-home"></i>
-              <span>文章2</span>
-            </el-menu-item>
-          </el-submenu>
+            <el-submenu
+              v-if="item.children"
+              :index="item.indexPath"
+              :key="item.indexPath"
+            >
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{ item.title }}</span>
+              </template>
+              <el-menu-item
+                v-for="(obj, index) in item.children"
+                :index="obj.indexPath"
+                :key="index"
+              >
+                <i :class="obj.icon"></i>
+                <span>{{ obj.title }}</span>
+              </el-menu-item>
+            </el-submenu>
+          </template>
         </el-menu>
       </el-aside>
       <el-container>
@@ -100,8 +96,14 @@
 解决：@事件名.native=”方法名“ // .native给组件内根标签，绑定这个原生的事件
 <script>
 import { mapGetters } from 'vuex'
+import { getMenusListApi } from '@/api'
 export default {
   name: 'my-layout',
+  data () {
+    return {
+      menus: []
+    }
+  },
   computed: {
     ...mapGetters(['username', 'nickname', 'user_pic'])
   },
@@ -124,7 +126,15 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    async getMenusListFn () {
+      const res = await getMenusListApi()
+      this.menus = res.data.data
+      console.log(res.data.data)
     }
+  },
+  created () {
+    this.getMenusListFn()
   }
 }
 </script>
