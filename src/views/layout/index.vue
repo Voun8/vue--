@@ -100,6 +100,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getMenusListApi } from '@/api'
+
 export default {
   name: 'my-layout',
   data () {
