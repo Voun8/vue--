@@ -13,7 +13,7 @@ export default new Vuex.Store({
   getters: {
     username: state => state.userInfo.username,
     nickname: state => state.userInfo.nickname,
-    user_pic: state => state.userInfo.username
+    user_pic: state => state.userInfo.user_pic
   },
   mutations: {
     updateToken (state, value) {

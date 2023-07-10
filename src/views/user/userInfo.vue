@@ -25,7 +25,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitFn">提交修改</el-button>
-        <el-button>重置</el-button>
+        <el-button @click="resetFn">重置</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -64,15 +64,24 @@ export default {
     submitFn () {
       this.$refs.userFormRef.validate(async (valid) => {
         if (valid) {
-          console.log(this.userForm)
           this.userForm.id = this.$store.state.userInfo.id
-          const res = await updateUserInfoAPI(this.userForm)
-          console.log(res)
+          const { data: res } = await updateUserInfoAPI(this.userForm)
+          if (res.code !== 0) return this.$message.erroe('更新用户信息失败！')
+          this.$refs.userFormRef.resetFields()
+          this.$message.success('更新成功!')
+          this.$store.dispatch('getUserInfoActions')
         } else {
           // 未通过校验
           return false
         }
       })
+    },
+    resetFn () {
+      // this.userForm.nickname = ''
+      // this.userForm.email = ''
+
+      // el-form 也提供了一个重置表单的方法
+      this.$refs.userFormRef.resetFields()
     }
   }
 }
