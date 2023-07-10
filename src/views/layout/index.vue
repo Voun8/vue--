@@ -43,7 +43,7 @@
         </div>
         <!-- 侧边栏导航信息 -->
         <el-menu
-          default-active="/home"
+          :default-active="$route.path"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
@@ -51,6 +51,7 @@
           text-color="#fff"
           active-text-color="#409EFF"
           unique-opened
+          router
         >
           <template v-for="item in menus">
             <el-menu-item
