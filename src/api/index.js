@@ -83,3 +83,15 @@ export const getArtCateAPI = () => {
     method: 'GET'
   })
 }
+
+// 保存文章分类
+export const saveArtCateAPI = ({ cate_name, cate_alias }) => {
+  return request({
+    url: '/my/cate/add',
+    method: 'POST',
+    data: {
+      cate_name,
+      cate_alias
+    }
+  })
+}

@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { getArtCateAPI } from '@/api'
+import { getArtCateAPI, saveArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -116,6 +116,16 @@ export default {
       this.dialogVisible = false
     },
     confirmFn () {
+      this.$refs.addRef.validate(async (valid) => {
+        if (valid) {
+          const { data: res } = await saveArtCateAPI(this.addForm)
+          if (res.code !== 0) return this.$message.error(res.message)
+          this.$message.success(res.message)
+          this.getArtCateFn()
+        } else {
+          return false
+        }
+      })
       this.dialogVisible = false
     },
     dialogCloseFn () {
