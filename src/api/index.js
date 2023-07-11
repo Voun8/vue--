@@ -63,3 +63,14 @@ export const updateUserAvatarAPI = (avatar) => {
     }
   })
 }
+export const updatePwdAPI = ({ old_pwd, new_pwd, re_pwd }) => {
+  return request({
+    url: '/my/updatepwd',
+    method: 'PATCH',
+    data: {
+      old_pwd,
+      new_pwd,
+      re_pwd
+    }
+  })
+}
