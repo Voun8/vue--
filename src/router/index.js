@@ -26,12 +26,12 @@ const routes = [
       {
         path: 'user-pwd',
         component: () => import('@/views/user/userPwd.vue')
+      },
+      // art
+      {
+        path: 'art-Cate',
+        component: () => import('@/views/article/artCate.vue')
       }
-      // // art
-      // {
-      //   path: 'artCate',
-      //   component: ()=> import('@/views/art/artCate.vue')
-      // },
       // {
       //   path: 'artList',
       //   component: () => import('@/views/art/artList.vue')
