@@ -95,3 +95,15 @@ export const saveArtCateAPI = ({ cate_name, cate_alias }) => {
     }
   })
 }
+// 修改文章分类
+export const updateArtCateAPI = ({ id, cate_name, cate_alias }) => {
+  return request({
+    url: '/my/cate/info',
+    method: 'PUT',
+    data: {
+      id,
+      cate_name,
+      cate_alias
+    }
+  })
+}

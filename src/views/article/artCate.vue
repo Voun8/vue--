@@ -15,10 +15,17 @@
           width="100"
         ></el-table-column>
         <el-table-column prop="cate_name" label="分类名称"></el-table-column>
-        <el-table-column prop="cata_alias" label="分类别名"></el-table-column>
+        <el-table-column prop="cate_alias" label="分类别名"></el-table-column>
         <el-table-column label="操作">
-          <el-button type="primary" size="mini">修改</el-button>
-          <el-button type="danger" size="mini">删除</el-button>
+          <template v-slot="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="updateCateBtnFn(scope.row)"
+              >修改</el-button
+            >
+            <el-button type="danger" size="mini">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import { getArtCateAPI, saveArtCateAPI } from '@/api'
+import { getArtCateAPI, saveArtCateAPI, updateArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -91,7 +98,9 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      isEdit: false, // 默认新增
+      editId: '' // 保存正在编辑的数据id值
     }
   },
   created () {
@@ -103,13 +112,11 @@ export default {
       this.cateList = res.data.data
     },
     handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
+      done()
     },
     addCateShowDialogFn () {
+      this.isEdit = false
+      this.editId = ''
       this.dialogVisible = true
     },
     cancelFn () {
@@ -118,9 +125,19 @@ export default {
     confirmFn () {
       this.$refs.addRef.validate(async (valid) => {
         if (valid) {
-          const { data: res } = await saveArtCateAPI(this.addForm)
-          if (res.code !== 0) return this.$message.error(res.message)
-          this.$message.success(res.message)
+          // 通过校验
+          if (this.isEdit) {
+            // 要修改
+            this.addForm.id = this.editId
+            const { data: res } = await updateArtCateAPI(this.addForm)
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          } else {
+            // 要修改
+            const { data: res } = await saveArtCateAPI(this.addForm)
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          }
           this.getArtCateFn()
         } else {
           return false
@@ -130,6 +147,13 @@ export default {
     },
     dialogCloseFn () {
       this.$refs.addRef.resetFields()
+    },
+    updateCateBtnFn (obj) {
+      this.dialogVisible = true
+      this.isEdit = true
+      this.editId = obj.id
+      this.addForm.cate_name = obj.cate_name
+      this.addForm.cate_alias = obj.cate_alias
     }
   }
 }
