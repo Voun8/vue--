@@ -107,3 +107,12 @@ export const updateArtCateAPI = ({ id, cate_name, cate_alias }) => {
     }
   })
 }
+export const delArtCateAPI = (id) => {
+  return request({
+    url: '/my/cate/del',
+    method: 'DELETE',
+    params: {
+      id
+    }
+  })
+}

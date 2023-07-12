@@ -24,7 +24,7 @@
               @click="updateCateBtnFn(scope.row)"
               >修改</el-button
             >
-            <el-button type="danger" size="mini">删除</el-button>
+            <el-button type="danger" size="mini" @click="delCateFn(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { getArtCateAPI, saveArtCateAPI, updateArtCateAPI } from '@/api'
+import { getArtCateAPI, saveArtCateAPI, updateArtCateAPI, delArtCateAPI } from '@/api'
 export default {
   name: 'ArtCate',
   data () {
@@ -152,8 +152,16 @@ export default {
       this.dialogVisible = true
       this.isEdit = true
       this.editId = obj.id
-      this.addForm.cate_name = obj.cate_name
-      this.addForm.cate_alias = obj.cate_alias
+      this.$nextTick(() => {
+        this.addForm.cate_name = obj.cate_name
+        this.addForm.cate_alias = obj.cate_alias
+      })
+    },
+    async delCateFn (obj) {
+      const { data: res } = await delArtCateAPI(obj.id)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      this.getArtCateFn()
     }
   }
 }
