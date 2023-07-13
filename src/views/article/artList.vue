@@ -287,6 +287,7 @@ export default {
     handleSizeChangeFn (sizes) {
       // sizes：当前需要每页现实的条数
       // this.q.pagesize = sizes
+      this.q.pagenum = 1
       this.getArticleListFn()
     },
     // 当前页码改变时触发
