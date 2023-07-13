@@ -124,3 +124,15 @@ export const uploadArticleAPI = (fd) => {
     data: fd
   })
 }
+export const getArticleListAPI = ({ pagenum, pagesize, cate_id, state }) => {
+  return request({
+    url: '/my/article/list',
+    method: 'GET',
+    params: {
+      pagenum,
+      pagesize,
+      cate_id,
+      state
+    }
+  })
+}

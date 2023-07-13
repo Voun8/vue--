@@ -44,8 +44,30 @@
       </div>
 
       <!-- 文章表格区域 -->
-
+      <!-- 文章表格区域 -->
+      <el-table :data="artList" style="width: 100%" border stripe>
+        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="分类" prop="cate_name"></el-table-column>
+        <el-table-column label="发表时间" prop="pub_date">
+          <template v-slot="scope">
+            <span>{{ $formatDate(scope.row.pub_date) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" prop="state"></el-table-column>
+        <el-table-column label="操作"></el-table-column>
+      </el-table>
       <!-- 分页区域 -->
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChangeFn"
+        @current-change="handleCurrentChangeFn"
+        :current-page.sync="q.pagenum"
+        :page-sizes="[2, 3, 5, 10]"
+        :page-size.sync="q.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </el-card>
     <!-- 发表文章的 Dialog 对话框 -->
     <el-dialog
@@ -119,19 +141,20 @@
 </template>
 
 <script>
-import { getArtCateAPI, uploadArticleAPI } from '@/api'
+import { getArtCateAPI, uploadArticleAPI, getArticleListAPI } from '@/api'
 import imgObj from '../../assets/images/cover.jpg'
 export default {
   name: 'ArtList',
   created () {
     this.getCateListFn()
+    this.getArticleListFn()
   },
   data () {
     return {
       // 查询参数对象
       q: {
-        pagenum: 1,
-        pagesize: 2,
+        pagenum: 1, // 默认拿几条
+        pagesize: 5, // 默认当前页拿几条
         cate_id: '',
         state: ''
       },
@@ -167,10 +190,16 @@ export default {
         // 解决：
         // 自己来给quill-editor来绑定change事件（文档中查到的）
         // 在事件函数中用el-form组件对象内，调用某规则重新校验(validateField)
-        content: [{ required: true, message: '请输入文章内容', trigger: 'change' }],
-        cover_img: [{ required: true, message: '请选择封面', trigger: 'change' }]
+        content: [
+          { required: true, message: '请输入文章内容', trigger: 'change' }
+        ],
+        cover_img: [
+          { required: true, message: '请选择封面', trigger: 'change' }
+        ]
       },
-      cateList: []
+      cateList: [],
+      artList: [],
+      total: 0
     }
   },
   methods: {
@@ -199,6 +228,12 @@ export default {
       const { data: res } = await getArtCateAPI()
       this.cateList = res.data
     },
+    // 获取所以文章列表
+    async getArticleListFn () {
+      const { data: res } = await getArticleListAPI(this.q)
+      this.artList = res.data
+      this.total = res.total
+    },
     selCoverFn () {
       this.$refs.iptFileRef.click()
     },
@@ -218,23 +253,22 @@ export default {
       this.pubForm.state = str
       this.$refs.pubFormRef.validate(async (valid) => {
         if (valid) {
-        // 通过校验 发送请求
-          console.log(this.pubForm)
+          // 通过校验 发送请求
           const fd = new FormData()
           fd.append('title', this.pubForm.title)
           fd.append('cate_id', this.pubForm.cate_id)
           fd.append('content', this.pubForm.content)
           fd.append('cover_img', this.pubForm.cover_img)
           fd.append('state', this.pubForm.state)
-
           const { data: res } = await uploadArticleAPI(fd)
           if (res.code !== 0) return this.$message.error(res.message)
           this.$message.success(res.message)
-
           // 关闭对话框
           this.pubDialogVisible = false
+          // 刷新文章列表
+          this.getArticleListFn()
         } else {
-        // 未通过校验
+          // 未通过校验
           return false
         }
       })
@@ -248,6 +282,19 @@ export default {
       this.$refs.pubFormRef.resetFields()
       // 需要给封面重置，因为它时格外的组件
       this.$refs.imgRef.setAttribute('src', imgObj)
+    },
+    // 分页-》每页条数改变时触发
+    handleSizeChangeFn (sizes) {
+      // sizes：当前需要每页现实的条数
+      // this.q.pagesize = sizes
+      this.getArticleListFn()
+    },
+    // 当前页码改变时触发
+    handleCurrentChangeFn (noPage) {
+      // noPage：当前要看的第几页，页数
+      // 添加了.sync 数字已经变了，没必要再改
+      // this.q.pagenum = noPage
+      this.getArticleListFn()
     }
   }
 }
@@ -274,5 +321,8 @@ export default {
   width: 400px;
   height: 280px;
   object-fit: cover;
+}
+.el-pagination {
+  margin-top: 15px;
 }
 </style>
