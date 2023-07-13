@@ -31,12 +31,11 @@ const routes = [
       {
         path: 'art-Cate',
         component: () => import('@/views/article/artCate.vue')
+      },
+      {
+        path: 'art-List',
+        component: () => import('@/views/article/artList.vue')
       }
-      // ,
-      // {
-      //   path: 'artList',
-      //   component: () => import('@/views/art/artList.vue')
-      // }
 
     ]
   },
