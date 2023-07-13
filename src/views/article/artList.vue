@@ -146,7 +146,7 @@
       </el-form>
     </el-dialog>
     <!-- 查看文章详情的对话框 -->
-    <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%">
+    <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%" @close="dialogColseArtFn">
       <h1 class="title">{{ artDetail.title }}</h1>
 
       <div class="info">
@@ -353,6 +353,10 @@ export default {
         this.q.pagenum--
       }
       this.getArticleListFn()
+    },
+    // 关闭文章详细清空内容
+    dialogColseArtFn () {
+      this.artDetail = []
     }
   }
 }
