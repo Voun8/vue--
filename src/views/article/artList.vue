@@ -46,7 +46,11 @@
       <!-- 文章表格区域 -->
       <!-- 文章表格区域 -->
       <el-table :data="artList" style="width: 100%" border stripe>
-        <el-table-column label="文章标题" prop="title"></el-table-column>
+        <el-table-column label="文章标题" prop="title">
+          <template v-slot="scope">
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{ scope.row.title }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="分类" prop="cate_name"></el-table-column>
         <el-table-column label="发表时间" prop="pub_date">
           <template v-slot="scope">
@@ -54,7 +58,11 @@
           </template>
         </el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="操作">
+            <template v-slot="{ row }">
+              <el-button type="danger" size="mini" @click="removeFn(row.id)">删除</el-button>
+            </template>
+        </el-table-column>
       </el-table>
       <!-- 分页区域 -->
       <!-- 分页区域 -->
@@ -137,12 +145,31 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 查看文章详情的对话框 -->
+    <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%">
+      <h1 class="title">{{ artDetail.title }}</h1>
+
+      <div class="info">
+        <span>作者：{{ artDetail.nickname || artDetail.username }}</span>
+        <span>发布时间：{{ $formatDate(artDetail.pub_date) }}</span>
+        <span>所属分类：{{ artDetail.cate_name }}</span>
+        <span>状态：{{ artDetail.state }}</span>
+      </div>
+      <!-- 分割线 -->
+      <el-divider></el-divider>
+      <!-- 文章的封面 -->
+      <img v-if="artDetail.cover_img" :src="baseURL + artDetail.cover_img" alt="" />
+
+      <!-- 文章的详情 -->
+      <div v-html="artDetail.content" class="detail-box"></div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getArtCateAPI, uploadArticleAPI, getArticleListAPI } from '@/api'
+import { getArtCateAPI, uploadArticleAPI, getArticleListAPI, getArtDetailAPI, delArticleAPI } from '@/api'
 import imgObj from '../../assets/images/cover.jpg'
+import { baseURL } from '@/utils/request'
 export default {
   name: 'ArtList',
   created () {
@@ -199,7 +226,10 @@ export default {
       },
       cateList: [],
       artList: [],
-      total: 0
+      total: 0,
+      detailVisible: false,
+      artDetail: {}, // 文章详细
+      baseURL
     }
   },
   methods: {
@@ -308,6 +338,21 @@ export default {
       this.q.cate_id = ''
       this.q.state = ''
       this.getArticleListFn()
+    },
+    async showDetailFn (artId) {
+      this.detailVisible = true
+      const { data: res } = await getArtDetailAPI(artId)
+      console.log(res)
+      this.artDetail = res.data
+    },
+    async removeFn (artId) {
+      const { data: res } = await delArticleAPI(artId)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
+      if (this.artList === 1 && this.artList > 1) {
+        this.q.pagenum--
+      }
+      this.getArticleListFn()
     }
   }
 }
@@ -337,5 +382,26 @@ export default {
 }
 .el-pagination {
   margin-top: 15px;
+}
+.title {
+  font-size: 24px;
+  text-align: center;
+  font-weight: normal;
+  color: #000;
+  margin: 0 0 10px 0;
+}
+
+.info {
+  font-size: 12px;
+  span {
+    margin-right: 20px;
+  }
+}
+
+// 修改 dialog 内部元素的样式，需要添加样式穿透
+::v-deep .detail-box {
+  img {
+    width: 500px;
+  }
 }
 </style>
