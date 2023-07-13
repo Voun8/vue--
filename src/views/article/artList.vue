@@ -29,8 +29,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small">筛选</el-button>
-            <el-button type="info" size="small">重置</el-button>
+            <el-button type="primary" size="small" @click="choseFn">筛选</el-button>
+            <el-button type="info" size="small" @click="resetFn">重置</el-button>
           </el-form-item>
         </el-form>
         <!-- 发表文章的按钮 -->
@@ -294,6 +294,18 @@ export default {
       // noPage：当前要看的第几页，页数
       // 添加了.sync 数字已经变了，没必要再改
       // this.q.pagenum = noPage
+      this.getArticleListFn()
+    },
+    choseFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 5
+      this.getArticleListFn()
+    },
+    resetFn () {
+      this.q.pagenum = 1
+      this.q.pagesize = 5
+      this.q.cate_id = ''
+      this.q.state = ''
       this.getArticleListFn()
     }
   }
